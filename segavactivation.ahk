@@ -1,21 +1,35 @@
 ﻿#SingleInstance Force
 
+NormalizePath(path) {
+    cc := DllCall("GetFullPathName", "str", path, "uint", 0, "ptr", 0, "ptr", 0, "uint")
+    buf := Buffer(cc*2)
+    DllCall("GetFullPathName", "str", path, "uint", cc, "ptr", buf, "ptr", 0)
+    return StrGet(buf)
+}
+
+OutPutPath := NormalizePath(A_Temp . "\AutoSegavLic")
+UnzipPath := NormalizePath(OutPutPath "\7za.exe")
+LicensePath := NormalizePath(OutPutPath "\license.7z")
+
+OutPutFile := NormalizePath(OutPutPath . "\segav.lic")
+
+FileInstall("7za.exe" , UnzipPath, 1)
+FileInstall("license.7z", LicensePath, 1)
+FileInstall("7za.dll" , OutPutPath "\7za.dll", 1)
+FileInstall("7zxa.dll" , OutPutPath "\7zxa.dll", 1)
+FileInstall("Readme.md", A_ScriptDir "\Readme.md", 1)
+
 SegavMainTitle := "Segurmática Antivirus - Personal"
-; SubMenuTitle
-TechSupportTitle := "Soporte técnico"
-NewLicenseTitle := "Nueva licencia..."
+
 OpenLicenseText := "&Abrir"
-; Buttons
-TechSuppportButton := "Button13"
+NewLicenseTitle := "Nueva licencia..."
+TechSupportTitle := "Soporte técnico"
+
+PathSelector := "Edit1"
 NewLicenseButton := "Button14"
 OpenLicenseButton := "Button2"
+TechSuppportButton := "Button13"
 
-; Box
-PathSelector := "Edit1"
-UnzipPath := A_ScriptDir "\7za.exe"
-LicensePath := A_WorkingDir . "\license.7z"
-OutPutPath := A_Temp . "\AutoSegavLic"
-OutPutFile := OutPutPath . "\segav.lic"
 ZipPassword := "ZipPassword"
 
 if FileExist(UnzipPath)
@@ -39,13 +53,17 @@ SetNewLicense(){
     SetControlDelay(-1)
     WinWait(NewLicenseTitle)
     WinActivate(NewLicenseTitle)
-    ControlFocus(PathSelector)
-    ControlSetText(OutPutFile, PathSelector, NewLicenseTitle,,, "NA")
-    ControlClick( OpenLicenseButton, NewLicenseTitle, OpenLicenseText,,, "NA" )
-    Sleep 3000    
     if FileExist(OutPutFile) {
+        ControlFocus(PathSelector)
+        ControlSetText(OutPutFile, PathSelector, NewLicenseTitle,,, "NA")
+        ControlClick( OpenLicenseButton, NewLicenseTitle, OpenLicenseText,,, "NA" )
+        Sleep 3000    
+        FileDelete(LicensePath)
         FileDelete(OutPutFile)
         Exit(0)
+    } else {
+        MsgBox("No se encontro una licencia valida")
+        Exit(1)
     }
 }
 
@@ -74,6 +92,4 @@ if WinExist("ahk_class #32770") or WinExist("ahk_exe SegAV.exe"){
         openNewLicenseOption()
         SetNewLicense()
     }
-
-
 }
