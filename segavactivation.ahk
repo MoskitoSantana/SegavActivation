@@ -20,6 +20,10 @@ ZipPassword := "ZipPassword"
 
 if FileExist(UnzipPath)
     RunWait(UnzipPath . " x " . LicensePath . " -p" . ZipPassword . " -o" . OutPutPath . " -y",,"hide")
+else {
+    MsgBox("No se encontro un fichero 7z con licencia valida")
+    Exit(1)
+}
 
 openLicenceWindow(){
     SetControlDelay(-1)
