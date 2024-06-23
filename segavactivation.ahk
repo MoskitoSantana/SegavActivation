@@ -38,14 +38,21 @@ SetNewLicense(){
     ControlFocus(PathSelector)
     ControlSetText(OutPutFile, PathSelector, NewLicenseTitle,,, "NA")
     ControlClick( OpenLicenseButton, NewLicenseTitle, OpenLicenseText,,, "NA" )
+    Sleep 3000    
+    if FileExist(OutPutFile) {
+        FileDelete(OutPutFile)
+        Exit(0)
+    }
 }
 
 if WinExist("ahk_class #32770") or WinExist("ahk_exe SegAV.exe"){
     WinActivate
+    
     isOnTechWindow := ControlGetEnabled( TechSuppportButton , SegavMainTitle , TechSupportTitle )
     
     if ( isOnTechWindow) {
         openLicenceWindow()
+        Sleep 500
         openNewLicenseOption()
         SetNewLicense()
     }
@@ -59,9 +66,9 @@ if WinExist("ahk_class #32770") or WinExist("ahk_exe SegAV.exe"){
     
     if ( isOnTechWindow ) {
         openLicenceWindow()
+        Sleep 500
         openNewLicenseOption()
         SetNewLicense()
-
     }
 
 
