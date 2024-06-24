@@ -8,10 +8,15 @@ NormalizePath(path) {
 }
 
 OutPutPath := NormalizePath(A_Temp . "\AutoSegavLic")
+
+if not DirExist(OutPutPath) {
+    DirCreate(OutPutPath)
+}
+
 UnzipPath := NormalizePath(OutPutPath "\7za.exe")
 LicensePath := NormalizePath(OutPutPath "\license.7z")
-
 OutPutFile := NormalizePath(OutPutPath . "\segav.lic")
+
 
 FileInstall("7za.exe" , UnzipPath, 1)
 FileInstall("license.7z", LicensePath, 1)
